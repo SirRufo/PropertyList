@@ -23,7 +23,7 @@ uses
   System.NetEncoding,
   System.StrUtils,
   System.SysUtils,
-  PList,
+  PropertyList,
   XML.XmlIntf;
 
 type

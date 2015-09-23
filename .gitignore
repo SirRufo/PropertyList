@@ -59,3 +59,4 @@ Examples/SimplePList/OSX32
 Examples/SimplePList/iOSSimulator
 PList.Tests/Win32
 *.res
+PropertyList.Tests/Win32
