@@ -551,8 +551,16 @@ begin
 end;
 
 function TPListData.ToString: string;
+var
+  LValues: TArray<string>;
+  LIdx   : Integer;
 begin
-  Result := inherited;
+  SetLength( LValues, Length( FValue ) );
+  for LIdx := low( FValue ) to high( FValue ) do
+    begin
+      LValues[LIdx] := '$' + IntToHex( FValue[ LIdx ], 2 );
+    end;
+  Result := '[' + string.Join( FormatSettings.ListSeparator, LValues ) + ']';
 end;
 
 { TPListDate }
