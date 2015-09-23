@@ -19,15 +19,6 @@
         </DeployFile>
     </ItemGroup>
     <ItemGroup Condition="'$(Platform)'=='OSX32'">
-        <DeployFile Include="OSX32\Debug\SimplePList.rsm" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>SimplePList.app\Contents\MacOS\</RemoteDir>
-            <RemoteName>SimplePList.rsm</RemoteName>
-            <DeployClass>DebugSymbols</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="$(BDS)\bin\delphi_PROJECTICNS.icns" Condition="'$(Config)'=='Debug'">
             <RemoteDir>SimplePList.app\Contents\Resources\</RemoteDir>
             <RemoteName>SimplePList.icns</RemoteName>
