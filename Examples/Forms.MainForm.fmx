@@ -1,0 +1,93 @@
+object Form3: TForm3
+  Left = 0
+  Top = 0
+  Caption = 'Form3'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 2
+  object Layout1: TLayout
+    Align = Left
+    Size.Width = 50.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object Button1: TButton
+      Align = Top
+      Size.Width = 50.000000000000000000
+      Size.Height = 44.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Text = 'Load'
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Align = Top
+      Position.Y = 44.000000000000000000
+      Size.Width = 50.000000000000000000
+      Size.Height = 44.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'Set'
+      OnClick = Button2Click
+    end
+    object Button3: TButton
+      Align = Top
+      Position.Y = 88.000000000000000000
+      Size.Width = 50.000000000000000000
+      Size.Height = 44.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Text = 'Save'
+      OnClick = Button3Click
+    end
+  end
+  object Layout2: TLayout
+    Align = Client
+    Size.Width = 590.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    object Memo1: TMemo
+      Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+      DataDetectorTypes = []
+      ReadOnly = True
+      StyledSettings = [Size, Style, FontColor]
+      TextSettings.Font.Family = 'Courier New'
+      TextSettings.WordWrap = True
+      Align = Top
+      Margins.Left = 2.000000000000000000
+      Margins.Top = 2.000000000000000000
+      Margins.Right = 2.000000000000000000
+      Margins.Bottom = 2.000000000000000000
+      Position.X = 2.000000000000000000
+      Position.Y = 2.000000000000000000
+      Size.Width = 586.000000000000000000
+      Size.Height = 137.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Viewport.Width = 578.000000000000000000
+      Viewport.Height = 129.000000000000000000
+    end
+    object Memo2: TMemo
+      Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+      DataDetectorTypes = []
+      ReadOnly = True
+      StyledSettings = [Size, Style, FontColor]
+      TextSettings.Font.Family = 'Courier New'
+      Align = Client
+      Margins.Left = 2.000000000000000000
+      Margins.Top = 2.000000000000000000
+      Margins.Right = 2.000000000000000000
+      Margins.Bottom = 2.000000000000000000
+      Size.Width = 586.000000000000000000
+      Size.Height = 335.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Viewport.Width = 578.000000000000000000
+      Viewport.Height = 327.000000000000000000
+    end
+  end
+end

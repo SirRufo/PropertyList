@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{1CECF206-8D3F-4A5D-820E-EDFF1EC82E2F}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="PList.Tests\PList.Tests.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Examples\SimplePList\SimplePList.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="PList_Tests">
+        <MSBuild Projects="PList.Tests\PList.Tests.dproj"/>
+    </Target>
+    <Target Name="PList_Tests:Clean">
+        <MSBuild Projects="PList.Tests\PList.Tests.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PList_Tests:Make">
+        <MSBuild Projects="PList.Tests\PList.Tests.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SimplePList">
+        <MSBuild Projects="Examples\SimplePList\SimplePList.dproj"/>
+    </Target>
+    <Target Name="SimplePList:Clean">
+        <MSBuild Projects="Examples\SimplePList\SimplePList.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SimplePList:Make">
+        <MSBuild Projects="Examples\SimplePList\SimplePList.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="PList_Tests;SimplePList"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="PList_Tests:Clean;SimplePList:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="PList_Tests:Make;SimplePList:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
