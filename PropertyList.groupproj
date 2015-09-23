@@ -3,7 +3,7 @@
         <ProjectGuid>{1CECF206-8D3F-4A5D-820E-EDFF1EC82E2F}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="PList.Tests\PList.Tests.dproj">
+        <Projects Include="PropertyList.Tests\PropertyList.Tests.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Examples\SimplePList\SimplePList.dproj">
@@ -17,14 +17,14 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="PList_Tests">
-        <MSBuild Projects="PList.Tests\PList.Tests.dproj"/>
+    <Target Name="PropertyList_Tests">
+        <MSBuild Projects="PropertyList.Tests\PropertyList.Tests.dproj"/>
     </Target>
-    <Target Name="PList_Tests:Clean">
-        <MSBuild Projects="PList.Tests\PList.Tests.dproj" Targets="Clean"/>
+    <Target Name="PropertyList_Tests:Clean">
+        <MSBuild Projects="PropertyList.Tests\PropertyList.Tests.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="PList_Tests:Make">
-        <MSBuild Projects="PList.Tests\PList.Tests.dproj" Targets="Make"/>
+    <Target Name="PropertyList_Tests:Make">
+        <MSBuild Projects="PropertyList.Tests\PropertyList.Tests.dproj" Targets="Make"/>
     </Target>
     <Target Name="SimplePList">
         <MSBuild Projects="Examples\SimplePList\SimplePList.dproj"/>
@@ -36,13 +36,13 @@
         <MSBuild Projects="Examples\SimplePList\SimplePList.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="PList_Tests;SimplePList"/>
+        <CallTarget Targets="PropertyList_Tests;SimplePList"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="PList_Tests:Clean;SimplePList:Clean"/>
+        <CallTarget Targets="PropertyList_Tests:Clean;SimplePList:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="PList_Tests:Make;SimplePList:Make"/>
+        <CallTarget Targets="PropertyList_Tests:Make;SimplePList:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

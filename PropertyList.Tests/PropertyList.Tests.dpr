@@ -1,4 +1,4 @@
-program PList.Tests;
+program PropertyList.Tests;
 
 {$IFNDEF TESTINSIGHT}
 {$APPTYPE CONSOLE}
@@ -11,8 +11,8 @@ uses
   DUnitX.Loggers.Console,
   DUnitX.Loggers.Xml.NUnit,
   DUnitX.TestFramework,
-  PList.Tests.PListFixture in 'PList.Tests.PListFixture.pas',
-  PList.Tests.PListValueFixture in 'PList.Tests.PListValueFixture.pas';
+  PropertyList.Tests.PListFixture in 'PropertyList.Tests.PListFixture.pas',
+  PropertyList.Tests.PListValueFixture in 'PropertyList.Tests.PListValueFixture.pas';
 
 var
   runner : ITestRunner;

@@ -3,7 +3,7 @@ program SimplePList;
 uses
   System.StartUpCopy,
   FMX.Forms,
-  Forms.MainForm in '..\Forms.MainForm.pas' {Form3};
+  Forms.MainForm in 'Forms.MainForm.pas' {Form3};
 
 {$R *.res}
 

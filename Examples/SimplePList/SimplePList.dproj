@@ -91,7 +91,7 @@
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <AUP_READ_CALENDAR>true</AUP_READ_CALENDAR>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
-        <DCC_UnitSearchPath>..\..\PList;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\..\PropertyList;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <AUP_READ_EXTERNAL_STORAGE>true</AUP_READ_EXTERNAL_STORAGE>
         <AUP_ACCESS_FINE_LOCATION>true</AUP_ACCESS_FINE_LOCATION>
         <AUP_READ_PHONE_STATE>true</AUP_READ_PHONE_STATE>
@@ -305,7 +305,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\Forms.MainForm.pas">
+        <DCCReference Include="Forms.MainForm.pas">
             <Form>Form3</Form>
             <FormType>fmx</FormType>
         </DCCReference>

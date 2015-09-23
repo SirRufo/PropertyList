@@ -1,10 +1,10 @@
-unit PList.Tests.PListFixture;
+unit PropertyList.Tests.PListFixture;
 
 interface
 
 uses
   DUnitX.TestFramework,
-  PList;
+  PropertyList;
 
 type
 

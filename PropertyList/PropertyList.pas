@@ -13,7 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  *****************************************************************************)
-unit PList;
+unit PropertyList;
 
 interface
 
@@ -241,7 +241,7 @@ implementation
 
 uses
   System.TypInfo,
-  PList.XML;
+  PropertyList.XML;
 
 type
   TPListValueBase = class abstract( TInterfacedObject, IPListValue )

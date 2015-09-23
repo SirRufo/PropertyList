@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{0722A7B3-BEEC-43BA-8E0C-F519B8A92D38}</ProjectGuid>
         <ProjectVersion>18.0</ProjectVersion>
-        <MainSource>PList.Tests.dpr</MainSource>
+        <MainSource>PropertyList.Tests.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -69,8 +69,8 @@
         <UsingDelphiRTL>true</UsingDelphiRTL>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
-        <DCC_UnitSearchPath>$(DUnitX);..\PList;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <SanitizedProjectName>PList_Tests</SanitizedProjectName>
+        <DCC_UnitSearchPath>$(DUnitX);..\PropertyList;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <SanitizedProjectName>PropertyList_Tests</SanitizedProjectName>
         <VerInfo_Locale>1031</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
@@ -129,8 +129,8 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="PList.Tests.PListFixture.pas"/>
-        <DCCReference Include="PList.Tests.PListValueFixture.pas"/>
+        <DCCReference Include="PropertyList.Tests.PListFixture.pas"/>
+        <DCCReference Include="PropertyList.Tests.PListValueFixture.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -149,7 +149,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">PList.Tests.dpr</Source>
+                    <Source Name="MainSource">PropertyList.Tests.dpr</Source>
                 </Source>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k230.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automatisierungsserver</Excluded_Packages>
@@ -172,9 +172,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\PList.Tests.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\PropertyList.Tests.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>PList_Tests.exe</RemoteName>
+                        <RemoteName>PropertyList_Tests.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
