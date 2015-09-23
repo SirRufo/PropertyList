@@ -126,7 +126,7 @@ procedure TPListXmlWriter.DoWrite(
   const Node : IXMLNode;
   const Value: IPListDate );
 begin
-  Node.AddChild( PLIST_NODENAME_DATE ).Text := DateToISO8601( Value.Value );
+  Node.AddChild( PLIST_NODENAME_DATE ).Text := DateToISO8601( Value.Value, False );
 end;
 
 procedure TPListXmlWriter.DoWrite(
