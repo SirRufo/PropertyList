@@ -161,13 +161,13 @@ type
     property Count: Integer read GetCount;
     function GetItem( const Key: string ): TPListValue;
     procedure SetItem( const Key: string; const Value: TPListValue );
-    property Items[ const Key: string ]: TPListValue read GetItem write SetItem;
+    property Items[ const Key: string ]: TPListValue read GetItem write SetItem; default;
 
-    procedure Add( const Key: string; const Value: TPListValue );
-    procedure AddOrSet( const Key: string; const Value: TPListValue );
+    function Add( const Key: string; const Value: TPListValue ): IPListDict;
+    function AddOrSet( const Key: string; const Value: TPListValue ): IPListDict;
     function ContainsKey( const Key: string ): Boolean;
-    procedure Delete( const Key: string );
-    procedure Clear;
+    function Delete( const Key: string ): IPListDict;
+    function Clear: IPListDict;
   end;
 
   IPListInteger = interface( IPListValue )
@@ -337,11 +337,11 @@ type
   private
     FItems: TDictionary<string, IPListValue>;
   protected
-    procedure Add( const Key: string; const Value: TPListValue );
-    procedure AddOrSet( const Key: string; const Value: TPListValue );
-    procedure Clear;
+    function Add( const Key: string; const Value: TPListValue ): IPListDict;
+    function AddOrSet( const Key: string; const Value: TPListValue ): IPListDict;
+    function Clear: IPListDict;
     function ContainsKey( const Key: string ): Boolean;
-    procedure Delete( const Key: string );
+    function Delete( const Key: string ): IPListDict;
     function GetCount: Integer;
     function GetEnumerator: IPListKeyValueEnumerator;
     function GetItem( const Key: string ): TPListValue;
@@ -942,18 +942,21 @@ end;
 
 { TPListDict }
 
-procedure TPListDict.Add( const Key: string; const Value: TPListValue );
+function TPListDict.Add( const Key: string; const Value: TPListValue ): IPListDict;
 begin
+  Result := Self;
   FItems.Add( Key, Value.Clone );
 end;
 
-procedure TPListDict.AddOrSet( const Key: string; const Value: TPListValue );
+function TPListDict.AddOrSet( const Key: string; const Value: TPListValue ): IPListDict;
 begin
+  Result := Self;
   FItems.AddOrSetValue( Key, Value.Clone );
 end;
 
-procedure TPListDict.Clear;
+function TPListDict.Clear: IPListDict;
 begin
+  Result := Self;
   FItems.Clear;
 end;
 
@@ -983,8 +986,9 @@ begin
   FItems := TDictionary<string, IPListValue>.Create;
 end;
 
-procedure TPListDict.Delete( const Key: string );
+function TPListDict.Delete( const Key: string ): IPListDict;
 begin
+  Result := Self;
   FItems.Remove( Key );
 end;
 
