@@ -1,4 +1,4 @@
-(*****************************************************************************
+﻿(*****************************************************************************
  Copyright 2015 Oliver Münzberg (aka Sir Rufo)
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@ unit PropertyList.XML;
 interface
 
 uses
+  System.Classes,
   System.Generics.Collections,
   System.DateUtils,
   System.NetEncoding,
@@ -39,7 +40,7 @@ type
     procedure DoWrite( const Node: IXMLNode; const Value: IPListString ); overload;
     procedure DoWrite( const Node: IXMLNode; const Value: TPListValue ); overload;
   public
-    procedure Write( const PList: IPList; const Filename: string );
+    procedure Write( const PList: IPList; const Stream: TStream );
   end;
 
   TPListXmlReader = class
@@ -53,7 +54,7 @@ type
     function DoReadString( const Node: IXMLNode ): IPListString; overload;
     function DoRead( const Node: IXMLNode ): TPListValue; overload;
   public
-    procedure Read( const PList: IPList; const Filename: string );
+    procedure Read( const PList: IPList; const Stream: TStream );
   end;
 
 implementation
@@ -195,7 +196,7 @@ begin
     end;
 end;
 
-procedure TPListXmlWriter.Write( const PList: IPList; const Filename: string );
+procedure TPListXmlWriter.Write( const PList: IPList; const Stream: TStream );
 var
   LDom    : IDOMImplementation;
   LDocType: IDOMDocumentType;
@@ -223,7 +224,7 @@ begin
   then
     DoWrite( LNode, PList.Root );
 
-  LDoc.SaveToFile( Filename );
+  LDoc.SaveToStream( Stream );
 end;
 
 { TPListXmlReader }
@@ -296,15 +297,15 @@ begin
 end;
 
 procedure TPListXmlReader.Read(
-  const PList   : IPList;
-  const Filename: string );
+  const PList : IPList;
+  const Stream: TStream );
 var
   LDoc    : IXMLDocument;
   LNode   : IXMLNode;
   LVersion: string;
 begin
   LDoc := NewXMLDocument( );
-  LDoc.LoadFromFile( Filename );
+  LDoc.LoadFromStream( Stream );
 
   LNode := LDoc.DocumentElement;
 

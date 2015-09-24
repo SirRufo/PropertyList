@@ -1,4 +1,4 @@
-(*****************************************************************************
+﻿(*****************************************************************************
  Copyright 2015 Oliver Münzberg (aka Sir Rufo)
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -206,9 +206,13 @@ type
     procedure LoadFromFile( const Filename: string );
     procedure SaveToFile( const Filename: string ); overload;
     procedure SaveToFile( const Filename: string; FileType: TPListFileType ); overload;
+
+    procedure LoadFromStream( Stream: TStream );
+    procedure SaveToStream( Stream: TStream ); overload;
+    procedure SaveToStream( Stream: TStream; FileType: TPListFileType ); overload;
   end;
 
-  TPList = class( TInterfacedObject, IPList )
+  TPList = class( TInterfacedObject, IPList, IStreamPersist )
   private
     FRoot: IPListValue;
     FType: TPListFileType;
@@ -219,7 +223,11 @@ type
     procedure LoadFromFile( const Filename: string );
     procedure SaveToFile( const Filename: string ); overload;
     procedure SaveToFile( const Filename: string; FileType: TPListFileType ); overload;
-
+    procedure SaveToStream( Stream: TStream; FileType: TPListFileType ); overload;
+  private { IStreamPersist }
+    procedure LoadFromStream( Stream: TStream );
+    procedure SaveToStream( Stream: TStream ); overload;
+  private
     constructor Create;
   public
     class function CreateArray: IPListArray; overload;
@@ -466,17 +474,41 @@ end;
 
 procedure TPList.LoadFromFile( const Filename: string );
 var
+  LStream: TStream;
+begin
+  LStream := TFileStream.Create( Filename, fmOpenRead or fmShareDenyWrite );
+  try
+    LoadFromStream( LStream );
+  finally
+    LStream.Free;
+  end;
+end;
+
+procedure TPList.LoadFromStream( Stream: TStream );
+var
   LPlistReader: TPListXmlReader;
 begin
   LPlistReader := TPListXmlReader.Create;
   try
-    LPlistReader.Read( Self, Filename );
+    LPlistReader.Read( Self, Stream );
   finally
     LPlistReader.Free;
   end;
 end;
 
 procedure TPList.SaveToFile( const Filename: string; FileType: TPListFileType );
+var
+  LStream: TStream;
+begin
+  LStream := TFileStream.Create( Filename, fmCreate or fmShareDenyWrite );
+  try
+    SaveToStream( LStream, FileType );
+  finally
+    LStream.Free;
+  end;
+end;
+
+procedure TPList.SaveToStream( Stream: TStream; FileType: TPListFileType );
 var
   LPlistWriter: TPListXmlWriter;
 begin
@@ -488,10 +520,15 @@ begin
     else
       raise ENotImplemented.Create( 'Filetype' );
     end;
-    LPlistWriter.Write( Self, Filename );
+    LPlistWriter.Write( Self, Stream );
   finally
     LPlistWriter.Free;
   end;
+end;
+
+procedure TPList.SaveToStream( Stream: TStream );
+begin
+  SaveToStream( Stream, GetFileType );
 end;
 
 procedure TPList.SaveToFile( const Filename: string );
