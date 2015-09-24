@@ -269,7 +269,12 @@ begin
       then
         raise EPListFileException.CreateFmt( 'Key-Node expected but %s found', [ LKey.NodeName ] );
 
-      Result.Add( LKey.Text, DoRead( LValue ) );
+      try
+        Result.AddOrSet( LKey.Text, DoRead( LValue ) );
+      except
+        on E: EListError do
+          raise EListError.CreateFmt( '%s: %s', [ E.Message, LKey.Text ] );
+      end;
 
       Inc( LIdx, 2 );
     end;

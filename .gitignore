@@ -61,3 +61,5 @@ PList.Tests/Win32
 *.res
 PropertyList.Tests/Win32
 Examples/SimplePList/iOSDevice32
+Examples/SimplePList/bin
+Examples/ModPList/bin

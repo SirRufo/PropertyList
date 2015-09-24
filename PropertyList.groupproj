@@ -9,6 +9,9 @@
         <Projects Include="Examples\SimplePList\SimplePList.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Examples\ModPList\ModPList.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -35,14 +38,23 @@
     <Target Name="SimplePList:Make">
         <MSBuild Projects="Examples\SimplePList\SimplePList.dproj" Targets="Make"/>
     </Target>
+    <Target Name="ModPList">
+        <MSBuild Projects="Examples\ModPList\ModPList.dproj"/>
+    </Target>
+    <Target Name="ModPList:Clean">
+        <MSBuild Projects="Examples\ModPList\ModPList.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ModPList:Make">
+        <MSBuild Projects="Examples\ModPList\ModPList.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="PropertyList_Tests;SimplePList"/>
+        <CallTarget Targets="PropertyList_Tests;SimplePList;ModPList"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="PropertyList_Tests:Clean;SimplePList:Clean"/>
+        <CallTarget Targets="PropertyList_Tests:Clean;SimplePList:Clean;ModPList:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="PropertyList_Tests:Make;SimplePList:Make"/>
+        <CallTarget Targets="PropertyList_Tests:Make;SimplePList:Make;ModPList:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
