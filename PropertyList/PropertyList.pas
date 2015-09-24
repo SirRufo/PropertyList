@@ -58,8 +58,8 @@ type
   TPListValue = record
   private
     FValue: IPListValue;
-    procedure CastValue<TResult: IInterface>( out Value: TResult );
-    function CanCastValue<TResult: IInterface>( ): Boolean;
+    procedure CastValue( IID: TGUID; out Value );
+    function CanCastValue( IID: TGUID ): Boolean;
   public
     class operator Implicit( const A: CFBool ): TPListValue;
     class operator Implicit( const A: CFData ): TPListValue;
@@ -558,7 +558,7 @@ begin
   SetLength( LValues, Length( FValue ) );
   for LIdx := low( FValue ) to high( FValue ) do
     begin
-      LValues[LIdx] := '$' + IntToHex( FValue[ LIdx ], 2 );
+      LValues[ LIdx ] := '$' + IntToHex( FValue[ LIdx ], 2 );
     end;
   Result := '[' + string.Join( FormatSettings.ListSeparator, LValues ) + ']';
 end;
@@ -694,34 +694,28 @@ end;
 
 function TPListValue.A: IPListArray;
 begin
-  CastValue( Result );
+  CastValue( IPListArray, Result );
 end;
 
 function TPListValue.B: IPListBool;
 begin
-  CastValue( Result );
+  CastValue( IPListBool, Result );
 end;
 
-function TPListValue.CanCastValue<TResult>: Boolean;
-var
-  LType: PTypeInfo;
+function TPListValue.CanCastValue( IID: TGUID ): Boolean;
 begin
-  LType  := TypeInfo( TResult );
-  Result := Assigned( FValue ) and Supports( FValue, LType.TypeData.GUID );
+  Result := Assigned( FValue ) and Supports( FValue, IID );
 end;
 
-procedure TPListValue.CastValue<TResult>( out Value: TResult );
-var
-  LType: PTypeInfo;
+procedure TPListValue.CastValue( IID: TGUID; out Value );
 begin
   if not Assigned( FValue )
   then
     raise EInvalidOpException.Create( 'No value assigned' );
 
-  LType := TypeInfo( TResult );
-  if not Supports( FValue, LType.TypeData.GUID, Value )
+  if not Supports( FValue, IID, Value )
   then
-    raise EInvalidCast.CreateFmt( 'Cannot cast to type %s', [ LType.Name ] );
+    raise EInvalidCast.CreateFmt( 'Cannot cast to interface %s', [ IID.ToString ] );
 end;
 
 function TPListValue.Clone: TPListValue;
@@ -735,17 +729,17 @@ end;
 
 function TPListValue.Data: IPListData;
 begin
-  CastValue( Result );
+  CastValue( IPListData, Result );
 end;
 
 function TPListValue.Date: IPListDate;
 begin
-  CastValue( Result );
+  CastValue( IPListDate, Result );
 end;
 
 function TPListValue.Dict: IPListDict;
 begin
-  Self.CastValue( Result );
+  CastValue( IPListDict, Result );
 end;
 
 class operator TPListValue.Equal( const L, R: TPListValue ): Boolean;
@@ -755,7 +749,7 @@ end;
 
 function TPListValue.I: IPListInteger;
 begin
-  Self.CastValue( Result );
+  CastValue( IPListInteger, Result );
 end;
 
 class operator TPListValue.Implicit( const A: TPListValue ): IPListValue;
@@ -805,27 +799,27 @@ end;
 
 function TPListValue.IsArray: Boolean;
 begin
-  Result := CanCastValue<IPListArray>;
+  Result := CanCastValue( IPListArray );
 end;
 
 function TPListValue.IsBool: Boolean;
 begin
-  Result := CanCastValue<IPListBool>;
+  Result := CanCastValue( IPListBool );
 end;
 
 function TPListValue.IsData: Boolean;
 begin
-  Result := CanCastValue<IPListData>;
+  Result := CanCastValue( IPListData );
 end;
 
 function TPListValue.IsDate: Boolean;
 begin
-  Result := CanCastValue<IPListDate>;
+  Result := CanCastValue( IPListDate );
 end;
 
 function TPListValue.IsDict: Boolean;
 begin
-  Result := CanCastValue<IPListDict>;
+  Result := CanCastValue( IPListDict );
 end;
 
 function TPListValue.IsEmpty: Boolean;
@@ -835,17 +829,17 @@ end;
 
 function TPListValue.IsInteger: Boolean;
 begin
-  Result := CanCastValue<IPListInteger>;
+  Result := CanCastValue( IPListInteger );
 end;
 
 function TPListValue.IsReal: Boolean;
 begin
-  Result := CanCastValue<IPListReal>;
+  Result := CanCastValue( IPListReal );
 end;
 
 function TPListValue.IsString: Boolean;
 begin
-  Result := CanCastValue<IPListString>;
+  Result := CanCastValue( IPListString );
 end;
 
 class operator TPListValue.NotEqual( const L, R: TPListValue ): Boolean;
@@ -855,12 +849,12 @@ end;
 
 function TPListValue.R: IPListReal;
 begin
-  Self.CastValue( Result );
+  CastValue( IPListReal, Result );
 end;
 
 function TPListValue.S: IPListString;
 begin
-  Self.CastValue( Result );
+  CastValue( IPListString, Result );
 end;
 
 function TPListValue.ToString: string;
