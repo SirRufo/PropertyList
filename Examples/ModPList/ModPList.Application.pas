@@ -11,11 +11,12 @@ type
   TApplication = class abstract
   private
     class function GetArgs: TArray<string>;
-    class function JsonToPListValue( const JsonString: string ): TPListValue;
     class procedure HandleArray( const Value: IPListArray );
     class procedure HandleDict( const Value: IPListDict );
     class procedure HandleString( const Value: IPListString; const ModifyCallback: TProc<TPListValue> );
     class procedure HandleValue( const Value: TPListValue; const ModifyCallback: TProc<TPListValue> );
+
+    class procedure FixTWebBrowserIssueForIOS9( const PList: IPList );
   protected
     class procedure Main( const Args: TArray<string> );
   public
@@ -26,9 +27,30 @@ type
 implementation
 
 uses
-  System.IOUtils;
+  System.IOUtils,
+  System.StrUtils;
 
 { TApplication }
+
+class procedure TApplication.FixTWebBrowserIssueForIOS9( const PList: IPList );
+const
+  NSAppTransportSecurity       = 'NSAppTransportSecurity';
+  NSAllowsArbitraryLoads       = 'NSAllowsArbitraryLoads';
+  NSAllowsArbitraryLoads_Value = True;
+var
+  LDict: IPListDict;
+begin
+  // Fixing the FMX TWebBrowser issue on iOS9
+  LDict := PList.Root.Dict;
+  if not LDict.ContainsKey( NSAppTransportSecurity )
+  then
+    LDict.Add( NSAppTransportSecurity, TPList.CreateDict );
+  if not LDict[ NSAppTransportSecurity ].IsDict
+  then
+    raise EPListFileException.CreateFmt( 'Key "%s" is not a dictionary', [ NSAppTransportSecurity ] );
+  LDict := LDict[ NSAppTransportSecurity ].Dict;
+  LDict.AddOrSet( NSAllowsArbitraryLoads, True );
+end;
 
 class function TApplication.GetArgs: TArray<string>;
 var
@@ -73,7 +95,7 @@ class procedure TApplication.HandleString( const Value: IPListString; const Modi
 begin
   if SameStr( Value.Value, 'YES' )
   then
-    ModifyCallback( true )
+    ModifyCallback( True )
   else if SameStr( Value.Value, 'NO' )
   then
     ModifyCallback( False );
@@ -96,21 +118,24 @@ class procedure TApplication.Init;
 begin
 end;
 
-class function TApplication.JsonToPListValue( const JsonString: string ): TPListValue;
-begin
-  Result := JsonString;
-end;
-
 class procedure TApplication.Main( const Args: TArray<string> );
 var
+  LPlatform  : string;
+  LConfig    : string;
   LSourceFile: string;
   LSource    : IPList;
 begin
-  if Length( Args ) <> 1
+  if not FindCmdLineSwitch( 'p=', LPlatform, True, [ clstValueAppended ] ) and not FindCmdLineSwitch( 'platform', LPlatform, True, [ clstValueNextParam ] )
   then
-    raise EArgumentException.Create( 'Not enough arguments' );
+    raise EArgumentException.Create( 'Platform is missing' );
 
-  LSourceFile := Args[ 0 ];
+  if not FindCmdLineSwitch( 'c=', LConfig, True, [ clstValueAppended ] ) and not FindCmdLineSwitch( 'config', LConfig, True, [ clstValueNextParam ] )
+  then
+    raise EArgumentException.Create( 'Config is missing' );
+
+  if not FindCmdLineSwitch( 'f=', LSourceFile, True, [ clstValueAppended ] ) and not FindCmdLineSwitch( 'file', LSourceFile, True, [ clstValueNextParam ] )
+  then
+    raise EArgumentException.Create( 'file is missing' );
 
   if not TFile.Exists( LSourceFile )
   then
@@ -122,6 +147,10 @@ begin
     raise EInvalidOpException.CreateFmt( 'Root item in "%s" is not a dictionary', [ LSourceFile ] );
 
   HandleDict( LSource.Root.Dict );
+
+  if LPlatform.StartsWith( 'iOS', True )
+  then
+    FixTWebBrowserIssueForIOS9( LSource );
 
   LSource.SaveToFile( LSourceFile );
 end;

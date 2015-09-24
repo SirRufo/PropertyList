@@ -6,6 +6,7 @@ program ModPList;
 uses
   System.IOUtils,
   System.SysUtils,
+  PropertyList,
   ModPList.Application in 'ModPList.Application.pas';
 
 begin
@@ -18,21 +19,25 @@ begin
         Writeln( E.ClassName, ': ', E.Message );
         ExitCode := 1;
       end;
-    on E: EFileNotFoundException do
+    on E: EPListFileException do
       begin
         Writeln( E.ClassName, ': ', E.Message );
         ExitCode := 2;
       end;
-    on E: EArgumentException do
+    on E: EFileNotFoundException do
       begin
         Writeln( E.ClassName, ': ', E.Message );
         ExitCode := 3;
+      end;
+    on E: EArgumentException do
+      begin
+        Writeln( E.ClassName, ': ', E.Message );
+        ExitCode := 4;
       end;
     on E: Exception do
       begin
         Writeln( E.ClassName, ': ', E.Message );
         ExitCode := 9999;
-        TFile.WriteAllText( TPath.ChangeExtension( ParamStr( 0 ), '.log' ), E.ClassName + ': ' + E.Message, TEncoding.UTF8 );
       end;
   end;
 {$IFDEF DEBUG}
