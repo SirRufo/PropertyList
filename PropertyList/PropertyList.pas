@@ -117,7 +117,7 @@ type
     property Count: Integer read GetCount;
     function GetItem( const Idx: Integer ): TPListValue;
     procedure SetItem( const Idx: Integer; const Value: TPListValue );
-    property Items[ const Idx: Integer ]: TPListValue read GetItem write SetItem;
+    property Items[ const Idx: Integer ]: TPListValue read GetItem write SetItem; default;
 
     function Add( const Value: TPListValue ): Integer;
     procedure Delete( const Idx: Integer );
