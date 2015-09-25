@@ -55,11 +55,7 @@ __history/
 
 # Castalia statistics file
 *.stat
-Examples/SimplePList/OSX32
-Examples/SimplePList/iOSSimulator
-PList.Tests/Win32
 *.res
-PropertyList.Tests/Win32
-Examples/SimplePList/iOSDevice32
 Examples/SimplePList/bin
 Examples/ModPList/bin
+PropertyList.Tests/bin
