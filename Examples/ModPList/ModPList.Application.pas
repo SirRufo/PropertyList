@@ -15,8 +15,7 @@ type
     class procedure HandleDict( const Value: IPListDict );
     class procedure HandleString( const Value: IPListString; const ModifyCallback: TProc<TPListValue> );
     class procedure HandleValue( const Value: TPListValue; const ModifyCallback: TProc<TPListValue> );
-
-    class procedure FixTWebBrowserIssueForIOS9( const PList: IPList );
+    class procedure HandleInclude( const ADict: IPListDict; const APath: string; const APlatform: string = ''; const AConfig: string = '' );
   protected
     class procedure Main( const Args: TArray<string> );
   public
@@ -31,26 +30,6 @@ uses
   System.StrUtils;
 
 { TApplication }
-
-class procedure TApplication.FixTWebBrowserIssueForIOS9( const PList: IPList );
-const
-  NSAppTransportSecurity       = 'NSAppTransportSecurity';
-  NSAllowsArbitraryLoads       = 'NSAllowsArbitraryLoads';
-  NSAllowsArbitraryLoads_Value = True;
-var
-  LDict: IPListDict;
-begin
-  // Fixing the FMX TWebBrowser issue on iOS9
-  LDict := PList.Root.Dict;
-  if not LDict.ContainsKey( NSAppTransportSecurity )
-  then
-    LDict.Add( NSAppTransportSecurity, TPList.CreateDict );
-  if not LDict[ NSAppTransportSecurity ].IsDict
-  then
-    raise EPListFileException.CreateFmt( 'Key "%s" is not a dictionary', [ NSAppTransportSecurity ] );
-  LDict := LDict[ NSAppTransportSecurity ].Dict;
-  LDict.AddOrSet( NSAllowsArbitraryLoads, True );
-end;
 
 class function TApplication.GetArgs: TArray<string>;
 var
@@ -91,12 +70,50 @@ begin
     end;
 end;
 
+class procedure TApplication.HandleInclude(
+  const ADict    : IPListDict;
+  const APath    : string;
+  const APlatform: string;
+  const AConfig  : string );
+var
+  LInclude     : IPList;
+  LIncludeFile : string;
+  LKeyValuePair: TPListKeyValuePair;
+begin
+  LIncludeFile := 'Include';
+
+  if not APlatform.IsEmpty
+  then
+    LIncludeFile := string.Join( '.', [ LIncludeFile, APlatform ] );
+
+  if not AConfig.IsEmpty
+  then
+    LIncludeFile := string.Join( '.', [ LIncludeFile, AConfig ] );
+
+  LIncludeFile := string.Join( '.', [ LIncludeFile, 'Info', 'plist' ] );
+  LIncludeFile := TPath.Combine( APath, LIncludeFile );
+
+  if TFile.Exists( LIncludeFile )
+  then
+    begin
+      LInclude := TPList.CreatePList( LIncludeFile );
+      if not LInclude.Root.IsDict
+      then
+        raise Exception.Create( 'Fehlermeldung' );
+
+      for LKeyValuePair in LInclude.Root.Dict do
+        begin
+          ADict.AddOrSet( LKeyValuePair.Key, LKeyValuePair.Value.Clone );
+        end;
+    end;
+end;
+
 class procedure TApplication.HandleString( const Value: IPListString; const ModifyCallback: TProc<TPListValue> );
 begin
-  if SameStr( Value.Value, 'YES' )
+  if SameText( Value.Value, 'bool:true' )
   then
     ModifyCallback( True )
-  else if SameStr( Value.Value, 'NO' )
+  else if SameText( Value.Value, 'bool:false' )
   then
     ModifyCallback( False );
 end;
@@ -120,10 +137,12 @@ end;
 
 class procedure TApplication.Main( const Args: TArray<string> );
 var
-  LPlatform  : string;
-  LConfig    : string;
-  LSourceFile: string;
-  LSource    : IPList;
+  LPlatform    : string;
+  LConfig      : string;
+  LSourceFile  : string;
+  LSource      : IPList;
+  LIncludePaths: string;
+  LIncludePath : string;
 begin
   if not FindCmdLineSwitch( 'p=', LPlatform, True, [ clstValueAppended ] ) and not FindCmdLineSwitch( 'platform', LPlatform, True, [ clstValueNextParam ] )
   then
@@ -137,6 +156,11 @@ begin
   then
     raise EArgumentException.Create( 'file is missing' );
 
+  if not FindCmdLineSwitch( 'i=', LIncludePaths, True, [ clstValueAppended ] ) and not FindCmdLineSwitch( 'include', LIncludePaths, True,
+    [ clstValueNextParam ] )
+  then
+    LIncludePaths := '';
+
   if not TFile.Exists( LSourceFile )
   then
     raise EFileNotFoundException.Create( LSourceFile );
@@ -148,9 +172,19 @@ begin
 
   HandleDict( LSource.Root.Dict );
 
-  if LPlatform.StartsWith( 'iOS', True )
+  if not LIncludePaths.IsEmpty
   then
-    FixTWebBrowserIssueForIOS9( LSource );
+    begin
+      for LIncludePath in LIncludePaths.Split( [ ',' ], ExcludeEmpty ) do
+        begin
+          HandleInclude( LSource.Root.Dict, LIncludePath );                                 // include for all platforme
+          HandleInclude( LSource.Root.Dict, LIncludePath, '', LConfig );                    // include for all platforme, config
+          HandleInclude( LSource.Root.Dict, LIncludePath, LPlatform.Remove( 3 ) );          // include for general platform (first 3 chars)
+          HandleInclude( LSource.Root.Dict, LIncludePath, LPlatform.Remove( 3 ), LConfig ); // include for general platform (first 3 chars), config
+          HandleInclude( LSource.Root.Dict, LIncludePath, LPlatform );                      // include for platform
+          HandleInclude( LSource.Root.Dict, LIncludePath, LPlatform, LConfig );             // include for platform, config
+        end;
+    end;
 
   LSource.SaveToFile( LSourceFile );
 end;
