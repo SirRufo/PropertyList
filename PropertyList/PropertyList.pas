@@ -243,6 +243,7 @@ type
     class function CreateString( const Value: CFString ): IPListString;
     class function CreatePList( ): IPList; overload;
     class function CreatePList( const Filename: string ): IPList; overload;
+    class function CreatePList( const Stream: TStream ): IPList; overload;
   end;
 
 implementation
@@ -548,6 +549,12 @@ begin
     begin
       FRoot := Value;
     end;
+end;
+
+class function TPList.CreatePList( const Stream: TStream ): IPList;
+begin
+  Result := TPList.Create;
+  Result.LoadFromStream( Stream );
 end;
 
 { TPListValueBase<T> }
