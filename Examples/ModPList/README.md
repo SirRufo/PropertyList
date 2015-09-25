@@ -97,7 +97,7 @@ Variable | Value
 :--- | :---
 `ModPList` | `C:\MyTools\ModPList\ModPList.exe`
 
-and the use this for the Build-Event
+and then use this for the Build-Event
 
 `"$(ModPList)" -p="$(Platform)" -c="$(Config)" -f="$(OUTPUTPATH).info.plist" -i="$(PROJECTDIR),$(INCLUDEPATH)"`
 
