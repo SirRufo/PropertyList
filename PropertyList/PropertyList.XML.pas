@@ -30,6 +30,7 @@ uses
 type
   TPListXmlWriter = class
   private
+    FFileOptions: TPListFileOptions;
     procedure DoWrite( const Node: IXMLNode; const Value: IPListArray ); overload;
     procedure DoWrite( const Node: IXMLNode; const Value: IPListBool ); overload;
     procedure DoWrite( const Node: IXMLNode; const Value: IPListDate ); overload;
@@ -45,6 +46,7 @@ type
 
   TPListXmlReader = class
   private
+    FFileOptions: TPListFileOptions;
     function DoReadArray( const Node: IXMLNode ): IPListArray; overload;
     function DoReadData( const Node: IXMLNode ): IPListData; overload;
     function DoReadDate( const Node: IXMLNode ): IPListDate; overload;
@@ -158,7 +160,8 @@ begin
   else if Value.IsString
   then
     DoWrite( Node, Value.S )
-  else
+  else if not( TPListFileOption.IgnoreUnknownTypes in FFileOptions )
+  then
     raise ENotImplemented.Create( 'Value type not implemented' );
 end;
 
@@ -248,6 +251,8 @@ begin
   then
     raise EArgumentNilException.Create( 'Stream' );
 
+  FFileOptions := PList.FileOptions;
+
   LDoc             := NewXMLDocument( );
   LDoc.DOMDocument := GetDOMDocument;
   LDoc.Encoding    := PLIST_DOC_ENCODING;
@@ -307,7 +312,9 @@ begin
         raise EPListFileException.CreateFmt( 'Key-Node expected but %s found', [ LKey.NodeName ] );
 
       try
-        Result.AddOrSet( LKey.Text, DoRead( LValue ) );
+        if not( TPListFileOption.IgnoreDictDuplicates in FFileOptions ) or not Result.ContainsKey( LKey.Text )
+        then
+          Result.Add( LKey.Text, DoRead( LValue ) );
       except
         on E: EListError do
           raise EListError.CreateFmt( '%s: %s', [ E.Message, LKey.Text ] );
@@ -348,6 +355,8 @@ begin
   then
     raise EArgumentNilException.Create( 'Stream' );
 
+  FFileOptions := PList.FileOptions;
+
   LDoc := GetNewDocument( );
   LDoc.LoadFromStream( Stream );
 
@@ -357,22 +366,30 @@ begin
   then
     raise EPListFileException.CreateFmt( 'First node should read "%s"', [ PLIST_DOM_QUALIFIEDNAME ] );
 
-  if not LNode.HasAttribute( PLIST_ATTRIBUTE_VERSION )
+  if not( TPListFileOption.IgnoreVersion in PList.FileOptions )
   then
-    raise EPListFileException.CreateFmt( 'Node attribute "%s" is missing', [ PLIST_ATTRIBUTE_VERSION ] );
+    begin
+      if not LNode.HasAttribute( PLIST_ATTRIBUTE_VERSION )
+      then
+        raise EPListFileException.CreateFmt( 'Node attribute "%s" is missing', [ PLIST_ATTRIBUTE_VERSION ] );
 
-  LVersion := LNode.Attributes[ PLIST_ATTRIBUTE_VERSION ];
+      LVersion := LNode.Attributes[ PLIST_ATTRIBUTE_VERSION ];
 
-  if LVersion <> PLIST_VERSION
-  then
-    raise EPListFileException.CreateFmt( 'Version "%s" expected but "%s" found', [ PLIST_VERSION, LVersion ] );
+      if LVersion <> PLIST_VERSION
+      then
+        raise EPListFileException.CreateFmt( 'Version "%s" expected but "%s" found', [ PLIST_VERSION, LVersion ] );
+    end;
 
   if LNode.HasChildNodes
   then
     begin
-      if LNode.ChildNodes.Count > 1
+      if not( TPListFileOption.IgnoreMultipleRootNodes in PList.FileOptions )
       then
-        raise EPListFileException.CreateFmt( 'Excpected %d node but found %d', [ 1, LNode.ChildNodes.Count ] );
+        begin
+          if LNode.ChildNodes.Count > 1
+          then
+            raise EPListFileException.CreateFmt( 'Excpected %d node but found %d', [ 1, LNode.ChildNodes.Count ] );
+        end;
 
       PList.Root := DoRead( LNode.ChildNodes.First );
     end
@@ -411,7 +428,9 @@ begin
     8:
       Result := DoReadString( Node );
   else
-    raise EPListFileException.CreateFmt( 'Not supported node type %s', [ Node.NodeName ] );
+    if not( TPListFileOption.IgnoreUnknownTypes in FFileOptions )
+    then
+      raise EPListFileException.CreateFmt( 'Not supported node type %s', [ Node.NodeName ] );
   end;
 end;
 

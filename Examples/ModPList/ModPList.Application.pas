@@ -165,7 +165,12 @@ begin
   then
     raise EFileNotFoundException.Create( LSourceFile );
 
-  LSource := TPList.CreatePList( LSourceFile );
+  LSource := TPList.CreatePList( );
+  // see https://quality.embarcadero.com/browse/RSP-12407
+  // Duplicate key CFBundleResourceSpecification in *.info.plist
+  LSource.FileOptions := LSource.FileOptions + [ TPListFileOption.IgnoreDictDuplicates ];
+  LSource.LoadFromFile( LSourceFile );
+
   if not LSource.Root.IsDict
   then
     raise EInvalidOpException.CreateFmt( 'Root item in "%s" is not a dictionary', [ LSourceFile ] );

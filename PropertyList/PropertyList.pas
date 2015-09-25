@@ -191,13 +191,19 @@ type
     property Value: CFString read GetValue write SetValue;
   end;
 
-  TPListFileType = ( XML, Binary );
+  TPListFileType    = ( XML, Binary );
+  TPListFileOption  = ( IgnoreVersion, IgnoreMultipleRootNodes, IgnoreDictDuplicates, IgnoreUnknownTypes );
+  TPListFileOptions = set of TPListFileOption;
 
   IPList = interface
     [ '{22FCC553-33CF-42E2-9CD7-921E298C545A}' ]
     function GetFileType: TPListFileType;
     procedure SetFileType( const Value: TPListFileType );
     property FileType: TPListFileType read GetFileType write SetFileType;
+
+    function GetFileOptions: TPListFileOptions;
+    procedure SetFileOptions( const Value: TPListFileOptions );
+    property FileOptions: TPListFileOptions read GetFileOptions write SetFileOptions;
 
     function GetRoot: TPListValue;
     procedure SetRoot( const Value: TPListValue );
@@ -214,8 +220,11 @@ type
 
   TPList = class( TInterfacedObject, IPList, IStreamPersist )
   private
-    FRoot: IPListValue;
-    FType: TPListFileType;
+    FRoot       : IPListValue;
+    FType       : TPListFileType;
+    FFileOptions: TPListFileOptions;
+    function GetFileOptions: TPListFileOptions;
+    procedure SetFileOptions( const Value: TPListFileOptions );
     function GetFileType: TPListFileType;
     procedure SetFileType( const Value: TPListFileType );
     function GetRoot: TPListValue;
@@ -463,6 +472,11 @@ begin
   Result := TPListString.Create( Value );
 end;
 
+function TPList.GetFileOptions: TPListFileOptions;
+begin
+  Result := FFileOptions;
+end;
+
 function TPList.GetFileType: TPListFileType;
 begin
   Result := FType;
@@ -535,6 +549,11 @@ end;
 procedure TPList.SaveToFile( const Filename: string );
 begin
   SaveToFile( Filename, GetFileType );
+end;
+
+procedure TPList.SetFileOptions( const Value: TPListFileOptions );
+begin
+  FFileOptions := Value;
 end;
 
 procedure TPList.SetFileType( const Value: TPListFileType );
