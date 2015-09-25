@@ -240,6 +240,14 @@ var
   LDoc : IXMLDocument;
   LNode: IXMLNode;
 begin
+  if not Assigned( PList )
+  then
+    raise EArgumentNilException.Create( 'PList' );
+
+  if not Assigned( Stream )
+  then
+    raise EArgumentNilException.Create( 'Stream' );
+
   LDoc             := NewXMLDocument( );
   LDoc.DOMDocument := GetDOMDocument;
   LDoc.Encoding    := PLIST_DOC_ENCODING;
@@ -332,6 +340,14 @@ var
   LNode   : IXMLNode;
   LVersion: string;
 begin
+  if not Assigned( PList )
+  then
+    raise EArgumentNilException.Create( 'PList' );
+
+  if not Assigned( Stream )
+  then
+    raise EArgumentNilException.Create( 'Stream' );
+
   LDoc := GetNewDocument( );
   LDoc.LoadFromStream( Stream );
 
