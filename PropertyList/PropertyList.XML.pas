@@ -62,10 +62,10 @@ implementation
 uses
   XML.XMLDoc,
   XML.xmldom,
-{$IFDEF MSWINDOWS}
-  XML.Win.msxmldom,
-{$ENDIF}
   XML.adomxmldom;
+
+const
+  XML_DOM_VENDOR = sAdom4XmlVendor;
 
 const
   PLIST_DOM_QUALIFIEDNAME = 'plist';
@@ -89,7 +89,46 @@ const
 
   PLIST_FORMATSETTINGS: TFormatSettings = ( DecimalSeparator: '.' );
 
-  { TPListXmlWriter }
+function GetDOMVendor( ): TDOMVendor;
+begin
+  Result := XML.xmldom.GetDOMVendor( XML_DOM_VENDOR );
+end;
+
+function GetNewDocument( const Version: DOMString = '1.0' ): IXMLDocument;
+var
+  LDocument: TXMLDocument;
+begin
+  LDocument := TXMLDocument.Create( nil );
+  try
+    LDocument.DOMVendor := GetDOMVendor( );
+    Result              := LDocument;
+    LDocument           := nil;
+  finally
+    LDocument.Free;
+  end;
+  Result.Active := True;
+  if Version <> ''
+  then
+    Result.Version := Version;
+end;
+
+function GetDOMDocumentType: IDOMDocumentType;
+begin
+  Result := GetDOMVendor.DOMImplementation.createDocumentType(
+    PLIST_DOM_QUALIFIEDNAME,
+    PLIST_DOM_PUBLICID,
+    PLIST_DOM_SYSTEMID );
+end;
+
+function GetDOMDocument: IDOMDocument;
+begin
+  Result := GetDOMVendor.DOMImplementation.createDocument(
+    PLIST_DOM_NAMESPACEURI,
+    PLIST_DOM_QUALIFIEDNAME,
+    GetDOMDocumentType );
+end;
+
+{ TPListXmlWriter }
 
 procedure TPListXmlWriter.DoWrite(
   const Node : IXMLNode;
@@ -198,24 +237,13 @@ end;
 
 procedure TPListXmlWriter.Write( const PList: IPList; const Stream: TStream );
 var
-  LDom    : IDOMImplementation;
-  LDocType: IDOMDocumentType;
-  LDoc    : IXMLDocument;
-  LNode   : IXMLNode;
+  LDoc : IXMLDocument;
+  LNode: IXMLNode;
 begin
-  LDom     := GetDOM( sAdom4XmlVendor );
-  LDocType := LDom.createDocumentType(
-    PLIST_DOM_QUALIFIEDNAME,
-    PLIST_DOM_PUBLICID,
-    PLIST_DOM_SYSTEMID );
-
   LDoc             := NewXMLDocument( );
-  LDoc.DOMDocument := LDom.createDocument(
-    PLIST_DOM_NAMESPACEURI,
-    PLIST_DOM_QUALIFIEDNAME,
-    LDocType );
-  LDoc.Encoding := PLIST_DOC_ENCODING;
-  LDoc.Options  := LDoc.Options + [ doNodeAutoIndent ];
+  LDoc.DOMDocument := GetDOMDocument;
+  LDoc.Encoding    := PLIST_DOC_ENCODING;
+  LDoc.Options     := LDoc.Options + [ doNodeAutoIndent ];
 
   LNode                                       := LDoc.DocumentElement;
   LNode.Attributes[ PLIST_ATTRIBUTE_VERSION ] := PLIST_VERSION;
@@ -304,7 +332,7 @@ var
   LNode   : IXMLNode;
   LVersion: string;
 begin
-  LDoc := NewXMLDocument( );
+  LDoc := GetNewDocument( );
   LDoc.LoadFromStream( Stream );
 
   LNode := LDoc.DocumentElement;
@@ -370,11 +398,5 @@ begin
     raise EPListFileException.CreateFmt( 'Not supported node type %s', [ Node.NodeName ] );
   end;
 end;
-
-initialization
-
-{$IFDEF MSWINDOWS}
-  XML.Win.msxmldom.MSXMLDOMDocumentFactory.AddDOMProperty( 'ProhibitDTD', False );
-{$ENDIF}
 
 end.

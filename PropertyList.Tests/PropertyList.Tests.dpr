@@ -12,7 +12,8 @@ uses
   DUnitX.Loggers.Xml.NUnit,
   DUnitX.TestFramework,
   PropertyList.Tests.PListFixture in 'PropertyList.Tests.PListFixture.pas',
-  PropertyList.Tests.PListValueFixture in 'PropertyList.Tests.PListValueFixture.pas';
+  PropertyList.Tests.PListValueFixture in 'PropertyList.Tests.PListValueFixture.pas',
+  PropertyList.Tests.PListXmlReaderFixture in 'PropertyList.Tests.PListXmlReaderFixture.pas';
 
 var
   runner : ITestRunner;
