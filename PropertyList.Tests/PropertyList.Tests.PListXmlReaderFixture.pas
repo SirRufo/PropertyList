@@ -56,6 +56,11 @@ var
 begin
   LPList := TPList.CreatePList( );
   FReader.Read( LPList, FPListXmlDataStream );
+
+  Assert.IsTrue( LPList.Root.IsDict );
+  Assert.IsTrue( LPList.Root.Dict.ContainsKey( 'Integer' ) );
+  Assert.IsTrue( LPList.Root.Dict[ 'Integer' ].IsInteger );
+  Assert.AreEqual( 8, LPList.Root.Dict[ 'Integer' ].I.Value );
 end;
 
 initialization
