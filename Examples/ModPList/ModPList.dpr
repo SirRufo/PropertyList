@@ -7,7 +7,8 @@ uses
   System.IOUtils,
   System.SysUtils,
   PropertyList,
-  ModPList.Application in 'ModPList.Application.pas';
+  ModPList.Application in 'ModPList.Application.pas',
+  ModPList.Consts in 'ModPList.Consts.pas';
 
 begin
   try

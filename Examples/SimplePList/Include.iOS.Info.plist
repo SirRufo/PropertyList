@@ -7,5 +7,7 @@
       <key>NSAllowsArbitraryLoads</key>
       <true/>
     </dict>
+	<key>DTPlatformName</key>
+	<string>iphoneos</string>
   </dict>
 </plist>
