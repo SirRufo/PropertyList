@@ -253,7 +253,7 @@ begin
 
   FFileOptions := PList.FileOptions;
 
-  LDoc             := NewXMLDocument( );
+  LDoc             := GetNewDocument( );
   LDoc.DOMDocument := GetDOMDocument;
   LDoc.Encoding    := PLIST_DOC_ENCODING;
   LDoc.Options     := LDoc.Options + [ doNodeAutoIndent ];
