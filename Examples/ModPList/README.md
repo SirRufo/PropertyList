@@ -61,7 +61,7 @@ Each directory Include-Path will be scanned for the following files in this orde
 **Example**
 
 ```
-ModPList.exe -f="$(OUTPUTPATH).Info.plist" -p=iOSDevice32` -c=Release -i="$(PROJECTDIR)"
+ModPList.exe -f="$(OUTPUTPATH).Info.plist" -p=iOSDevice32 -c=Release -i="$(PROJECTDIR)"
 ```
 
 will look for the following Include-Files
