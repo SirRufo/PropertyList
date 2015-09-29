@@ -52,11 +52,11 @@ All values from the Include-File are copied to the Target-File. Existing values 
 Each directory Include-Path will be scanned for the following files in this order:
 
 - `Include.Info.plist`
-- `Include.<Config>.Info.plist` (if *config* was set)
-- `Include.<Platform[3]>.Info.plist` (if *platform* was set)
-- `Include.<Platform[3]>.<Config>.Info.plist` (if *platform*/*config* were set)
-- `Include.<Platform>.Info.plist` (if *platform* was set)
-- `Include.<Platform>.<Config>.Info.plist` (if *platform*/*config* were set)
+- `Include.<Config>.Info.plist` (if `config` was set)
+- `Include.<Platform[3]>.Info.plist` (if `platform` was set)
+- `Include.<Platform[3]>.<Config>.Info.plist` (if `platform` and `config` were set)
+- `Include.<Platform>.Info.plist` (if `platform` was set)
+- `Include.<Platform>.<Config>.Info.plist` (if `platform` and `config` were set)
 
 **Example**
 
