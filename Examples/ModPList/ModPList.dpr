@@ -15,30 +15,10 @@ begin
     TApplication.Init( );
     TApplication.Run( );
   except
-    on E: EInvalidOpException do
-      begin
-        Writeln( E.ClassName, ': ', E.Message );
-        ExitCode := 1;
-      end;
-    on E: EPListFileException do
-      begin
-        Writeln( E.ClassName, ': ', E.Message );
-        ExitCode := 2;
-      end;
-    on E: EFileNotFoundException do
-      begin
-        Writeln( E.ClassName, ': ', E.Message );
-        ExitCode := 3;
-      end;
-    on E: EArgumentException do
-      begin
-        Writeln( E.ClassName, ': ', E.Message );
-        ExitCode := 4;
-      end;
     on E: Exception do
       begin
         Writeln( E.ClassName, ': ', E.Message );
-        ExitCode := 9999;
+        ExitCode := 1;
       end;
   end;
 {$IFDEF DEBUG}
