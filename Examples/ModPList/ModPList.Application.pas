@@ -3,7 +3,6 @@ unit ModPList.Application;
 interface
 
 uses
-  Winapi.ActiveX,
   System.SysUtils,
   PropertyList;
 
@@ -32,13 +31,13 @@ uses
   System.StrUtils;
 
 const
-  SIncludeFilePrefix = 'Include';
-  SIncludeFileName = 'Info';
-  SIncludeFileType = 'plist';
-  SBoolStringValueTrue = 'bool:true';
+  SIncludeFilePrefix    = 'Include';
+  SIncludeFileName      = 'Info';
+  SIncludeFileType      = 'plist';
+  SBoolStringValueTrue  = 'bool:true';
   SBoolStringValueFalse = 'bool:false';
 
-{ TApplication }
+  { TApplication }
 
 class function TApplication.GetArgs: TArray<string>;
 var
@@ -85,7 +84,7 @@ class procedure TApplication.HandleInclude(
   const APlatform: string;
   const AConfig  : string );
 var
-  LIncludeFile : string;
+  LIncludeFile: string;
 begin
   LIncludeFile := SIncludeFilePrefix;
 
@@ -115,6 +114,8 @@ begin
   if not TFile.Exists( AIncludeFile )
   then
     raise EFileNotFoundException.Create( AIncludeFile );
+
+  Writeln( string.Format( LoadResString( @SIncludingFile ), [ AIncludeFile ] ) );
 
   LInclude := TPList.CreatePList( AIncludeFile );
   if not LInclude.Root.IsDict
@@ -147,7 +148,12 @@ begin
     HandleDict( Value.Dict )
   else if Value.IsString
   then
-    HandleString( Value.S, ModifyCallback );
+    HandleString( Value.S,
+      procedure( v: TPListValue )
+      begin
+        Writeln( string.Format( LoadResString( @SModifyValueFromTo ), [ Value.ToString, v.ToString ] ) );
+        ModifyCallback( v );
+      end );
 end;
 
 class procedure TApplication.Init;
@@ -168,15 +174,21 @@ begin
   then
     raise EArgumentException.CreateRes( @SFileArgumentIsMissing );
 
+  Writeln( 'Target-File: ', LTargetFile );
+
   LCheckTargetExists := not FindCmdLineSwitch( 'ct', True ) and not FindCmdLineSwitch( 'checktarget', True );
 
   if not FindCmdLineSwitch( 'p=', LPlatform, True, [ clstValueAppended ] ) and not FindCmdLineSwitch( 'platform', LPlatform, True, [ clstValueNextParam ] )
   then
-    LPlatform := '';
+    LPlatform := ''
+  else
+    Writeln( 'Platform: ', LPlatform );
 
   if not FindCmdLineSwitch( 'c=', LConfig, True, [ clstValueAppended ] ) and not FindCmdLineSwitch( 'config', LConfig, True, [ clstValueNextParam ] )
   then
-    LConfig := '';
+    LConfig := ''
+  else
+    Writeln( 'Config: ', LConfig );
 
   if not FindCmdLineSwitch( 'i=', LIncludePaths, True, [ clstValueAppended ] ) and not FindCmdLineSwitch( 'include', LIncludePaths, True,
     [ clstValueNextParam ] )
@@ -187,9 +199,12 @@ begin
   then
     if LCheckTargetExists
     then
-      raise EFileNotFoundException.Create( LTargetFile )
+      raise EFileNotFoundException.CreateResFmt( @STargetFileNotFound, [ LTargetFile ] )
     else
-      Exit;
+      begin
+        Writeln( string.Format( LoadResString( @STargetFileNotFound ), [ LTargetFile ] ) );
+        Exit;
+      end;
 
   LTarget := TPList.CreatePList( );
   // see https://quality.embarcadero.com/browse/RSP-12407
@@ -206,11 +221,12 @@ begin
   if not LIncludePaths.IsEmpty
   then
     begin
-      for LIncludePath in LIncludePaths.Split( [ ',' ], '"', '"', TStringSplitOptions.ExcludeEmpty ) do
+      for LIncludePath in LIncludePaths.Split( [ ',', ';' ], TStringSplitOptions.ExcludeEmpty ) do
         begin
           if TDirectory.Exists( LIncludePath )
           then
             begin
+
               HandleInclude( LTarget.Root.Dict, LIncludePath ); // include for all platforms
               if not LConfig.IsEmpty
               then
@@ -232,7 +248,9 @@ begin
           then
             begin
               HandleIncludeFile( LTarget.Root.Dict, LIncludePath );
-            end;
+            end
+          else
+            Writeln( 'NOT FOUND: ', LIncludePath );
         end;
     end;
 
