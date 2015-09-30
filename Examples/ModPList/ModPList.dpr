@@ -12,7 +12,6 @@ uses
 
 begin
   try
-    TApplication.Init( );
     TApplication.Run( );
   except
     on E: Exception do

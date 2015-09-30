@@ -74,6 +74,8 @@ type
     class operator Equal( const L, R: TPListValue ): Boolean;
     class operator NotEqual( const L, R: TPListValue ): Boolean;
 
+    class function Empty: TPListValue; static;
+
     function A: IPListArray;
     function B: IPListBool;
     function Data: IPListData;
@@ -621,9 +623,9 @@ begin
   SetLength( LValues, Length( FValue ) );
   for LIdx := low( FValue ) to high( FValue ) do
     begin
-      LValues[ LIdx ] := '$' + IntToHex( FValue[ LIdx ], 2 );
+      LValues[ LIdx ] := IntToHex( FValue[ LIdx ], 2 );
     end;
-  Result := '[' + string.Join( FormatSettings.ListSeparator, LValues ) + ']';
+  Result := '$[' + string.Join( FormatSettings.ListSeparator, LValues ) + ']';
 end;
 
 { TPListDate }
@@ -803,6 +805,11 @@ end;
 function TPListValue.Dict: IPListDict;
 begin
   CastValue( IPListDict, Result );
+end;
+
+class function TPListValue.Empty: TPListValue;
+begin
+  Result.FValue := nil;
 end;
 
 class operator TPListValue.Equal( const L, R: TPListValue ): Boolean;
@@ -1054,10 +1061,10 @@ begin
   LIdx := 0;
   for LKey in FItems.Keys do
     begin
-      LValues[ LIdx ] := string.Format( '"%s"=%s', [ LKey, GetItem( LKey ).ToString ] );
+      LValues[ LIdx ] := string.Format( '%s=%s', [ LKey.QuotedString, GetItem( LKey ).ToString ] );
       Inc( LIdx );
     end;
-  Result := '[' + string.Join( FormatSettings.ListSeparator, LValues ) + ']';
+  Result := '{' + string.Join( FormatSettings.ListSeparator, LValues ) + '}';
 end;
 
 { TPListDictEnumerator }

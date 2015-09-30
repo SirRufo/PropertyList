@@ -5,9 +5,11 @@ interface
 resourcestring
   SFileArgumentIsMissing = 'File argument is missing';
   SRootItemInFileIsNotADictionary = 'Root item in "%s" is not a dictionary';
-  STargetFileNotFound = 'Target file "%s" not found';
+  SFileNotFound = 'File "%s" not found';
+  SFileOrDirectoryNotFound = 'File/Directory "%s" not found';
   SIncludingFile = 'Including file: "%s"';
-  SModifyValueFromTo = 'Modifiy Value from <%s> to <%s>';
+  SSetExistingValue = 'Set Value "%s"=%s (OLD: %s)';
+  SSetNewValue = 'Set Value "%s"=%s';
 
 implementation
 

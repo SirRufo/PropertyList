@@ -3,12 +3,19 @@ unit ModPList.Application;
 interface
 
 uses
+  System.Generics.Collections,
   System.SysUtils,
   PropertyList;
 
 type
   TApplication = class abstract
   private
+    class var FValueStack: TStack<string>;
+  private
+    class constructor Create;
+    class destructor Destroy;
+  private
+    class function GetValuePath: string;
     class function GetArgs: TArray<string>;
     class procedure HandleArray( const Value: IPListArray );
     class procedure HandleDict( const Value: IPListDict );
@@ -39,6 +46,17 @@ const
 
   { TApplication }
 
+class constructor TApplication.Create;
+begin
+  TApplication.FValueStack := TStack<string>.Create;
+  TApplication.Init( );
+end;
+
+class destructor TApplication.Destroy;
+begin
+  FreeAndNil( TApplication.FValueStack );
+end;
+
 class function TApplication.GetArgs: TArray<string>;
 var
   LIdx: Integer;
@@ -50,17 +68,27 @@ begin
     end;
 end;
 
+class function TApplication.GetValuePath: string;
+begin
+  Result := string.Join( '/', FValueStack.ToArray );
+end;
+
 class procedure TApplication.HandleArray( const Value: IPListArray );
 var
   LIdx: Integer;
 begin
   for LIdx := 0 to Value.Count - 1 do
     begin
-      HandleValue( Value[ LIdx ],
-        procedure( v: TPListValue )
-        begin
-          Value[ LIdx ] := v;
-        end );
+      FValueStack.Push( LIdx.ToString );
+      try
+        HandleValue( Value[ LIdx ],
+          procedure( v: TPListValue )
+          begin
+            Value[ LIdx ] := v;
+          end );
+      finally
+        FValueStack.Pop;
+      end;
     end;
 end;
 
@@ -70,11 +98,16 @@ var
 begin
   for LItem in Value do
     begin
-      HandleValue( LItem.Value,
-        procedure( v: TPListValue )
-        begin
-          Value.Items[ LItem.Key ] := v;
-        end );
+      FValueStack.Push( LItem.Key );
+      try
+        HandleValue( LItem.Value,
+          procedure( v: TPListValue )
+          begin
+            Value.Items[ LItem.Key ] := v;
+          end );
+      finally
+        FValueStack.Pop;
+      end;
     end;
 end;
 
@@ -110,6 +143,8 @@ class procedure TApplication.HandleIncludeFile(
 var
   LInclude     : IPList;
   LKeyValuePair: TPListKeyValuePair;
+  LOldValue    : TPListValue;
+  LMsgString   : string;
 begin
   if not TFile.Exists( AIncludeFile )
   then
@@ -124,7 +159,19 @@ begin
 
   for LKeyValuePair in LInclude.Root.Dict do
     begin
+      if ADict.ContainsKey( LKeyValuePair.Key )
+      then
+        begin
+          LOldValue  := ADict[ LKeyValuePair.Key ];
+          LMsgString := LoadResString( @SSetExistingValue )
+        end
+      else
+        begin
+          LOldValue  := TPListValue.Empty;
+          LMsgString := LoadResString( @SSetNewValue );
+        end;
       ADict.AddOrSet( LKeyValuePair.Key, LKeyValuePair.Value.Clone );
+      Writeln( string.Format( LMsgString, [ LKeyValuePair.Key, LKeyValuePair.Value.ToString, LOldValue.ToString ] ) );
     end;
 end;
 
@@ -151,7 +198,7 @@ begin
     HandleString( Value.S,
       procedure( v: TPListValue )
       begin
-        Writeln( string.Format( LoadResString( @SModifyValueFromTo ), [ Value.ToString, v.ToString ] ) );
+        Writeln( string.Format( LoadResString( @SSetExistingValue ), [ GetValuePath, v.ToString, Value.ToString ] ) );
         ModifyCallback( v );
       end );
 end;
@@ -199,10 +246,10 @@ begin
   then
     if LCheckTargetExists
     then
-      raise EFileNotFoundException.CreateResFmt( @STargetFileNotFound, [ LTargetFile ] )
+      raise EFileNotFoundException.CreateResFmt( @SFileNotFound, [ LTargetFile ] )
     else
       begin
-        Writeln( string.Format( LoadResString( @STargetFileNotFound ), [ LTargetFile ] ) );
+        Writeln( string.Format( LoadResString( @SFileNotFound ), [ LTargetFile ] ) );
         Exit;
       end;
 
@@ -250,7 +297,7 @@ begin
               HandleIncludeFile( LTarget.Root.Dict, LIncludePath );
             end
           else
-            Writeln( 'NOT FOUND: ', LIncludePath );
+            Writeln( string.Format( LoadResString( @SFileOrDirectoryNotFound ), [ LIncludePath ] ) );
         end;
     end;
 
