@@ -113,8 +113,8 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <PostBuildEvent><![CDATA["$(BDSCOMMONDIR)\ModPList.exe" -platform "$(Platform)" -config "$(Config)" -file "$(OUTPUTPATH).info.plist" -i="$(PROJECTDIR),$(INCLUDEPATH)"
-$(PostBuildEvent)]]></PostBuildEvent>
+        <PreBuildEvent><![CDATA["$(BDSCOMMONDIR)\ModPList.exe" -platform "$(Platform)" -config "$(Config)" -file "$(OUTPUTPATH).info.plist" -i="$(PROJECTDIR);$(INCLUDEPATH)"
+$(PreBuildEvent)]]></PreBuildEvent>
         <AUP_INTERNET>true</AUP_INTERNET>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
         <SanitizedProjectName>SimplePList</SanitizedProjectName>
@@ -415,14 +415,14 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="bin\iOSDevice32\Release\SimplePList.entitlements" Configuration="Release" Class="ProjectiOSEntitlements">
-                    <Platform Name="iOSDevice32">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="$(BDS)\bin\Artwork\iOS\iPhone\FM_LaunchImage_640x1136.png" Configuration="Release" Class="iPhone_Launch640x1136">
                     <Platform Name="iOSDevice32">
                         <RemoteName>Default-568h@2x.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="bin\iOSDevice32\Release\SimplePList.entitlements" Configuration="Release" Class="ProjectiOSEntitlements">
+                    <Platform Name="iOSDevice32">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -610,13 +610,13 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\iOS\iPhone\FM_ApplicationIcon_87x87.png" Configuration="Debug" Class="iPhone_AppIcon87">
-                    <Platform Name="iOSSimulator">
+                <DeployFile LocalName="OSX32\Debug\SimplePList.entitlements" Configuration="Debug" Class="ProjectOSXEntitlements">
+                    <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\iOS\iPad\FM_ApplicationIcon_76x76.png" Configuration="Release" Class="iPad_AppIcon76">
-                    <Platform Name="iOSDevice32">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\iOS\iPhone\FM_ApplicationIcon_87x87.png" Configuration="Debug" Class="iPhone_AppIcon87">
+                    <Platform Name="iOSSimulator">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -637,8 +637,8 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="OSX32\Debug\SimplePList.entitlements" Configuration="Debug" Class="ProjectOSXEntitlements">
-                    <Platform Name="OSX32">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\iOS\iPad\FM_ApplicationIcon_76x76.png" Configuration="Release" Class="iPad_AppIcon76">
+                    <Platform Name="iOSDevice32">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -828,8 +828,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="bin\iOSDevice32\Debug\SimplePList.entitlements" Configuration="Debug" Class="ProjectiOSEntitlements">
-                    <Platform Name="iOSDevice32">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\iOS\iPad\FM_LaunchImageLandscape_1024x748.png" Configuration="Debug" Class="iPad_Launch1024">
+                    <Platform Name="iOSSimulator">
+                        <RemoteName>Default-Landscape.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -839,9 +840,8 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\iOS\iPad\FM_LaunchImageLandscape_1024x748.png" Configuration="Debug" Class="iPad_Launch1024">
-                    <Platform Name="iOSSimulator">
-                        <RemoteName>Default-Landscape.png</RemoteName>
+                <DeployFile LocalName="bin\iOSDevice32\Debug\SimplePList.entitlements" Configuration="Debug" Class="ProjectiOSEntitlements">
+                    <Platform Name="iOSDevice32">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -1255,27 +1255,12 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
+                <DeployClass Name="ProjectiOSDeviceResourceRules">
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="ProjectOSXResource">
@@ -1629,12 +1614,27 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectiOSDeviceResourceRules">
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
@@ -1661,115 +1661,115 @@ $(PostBuildEvent)]]></PostBuildEvent>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
     <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Android'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='iOSDevice32'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='iOSDevice64'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='iOSSimulator'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='OSX32'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Android'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='iOSDevice32'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='iOSDevice64'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='iOSSimulator'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='OSX32'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win64'">
-        <PreBuildEvent/>
+        <PreBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR);$(INCLUDEPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>&quot;$(BDSCOMMONDIR)\ModPList.exe&quot; -platform &quot;$(Platform)&quot; -config &quot;$(Config)&quot; -file &quot;$(OUTPUTPATH).info.plist&quot; -i=&quot;$(PROJECTDIR),$(INCLUDEPATH)&quot;</PostBuildEvent>
+        <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>

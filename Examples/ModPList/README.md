@@ -14,7 +14,7 @@ Modifies Delphi generated `.plist` files from a [Build-Event].
 
   Check existence of Target-File.
 
-  If Target-File not exists the exit code is **3**.
+  If the Target-File does not exists the exitcode will be set to **1**.
 
 - `-p=<Platform>`, `-platform <Platform>` (*Optonal*)
 
@@ -28,11 +28,11 @@ Modifies Delphi generated `.plist` files from a [Build-Event].
 
   Makro to use in build events: `-c="$(Config)"`
 
-- `-i=<Path>[,<Path>]`, `-include <Path>[,<Path>]` (*Optional*)
+- `-i=<Path>[;<Path>[...]]`, `-include <Path>[;<Path>[...]]` (*Optional*)
 
-  Include directory or file paths for `.plist` template files.
+  Include directory or file paths for `.plist` template files seperated by comma `,` or semicolon `;`.
 
-  Makro to use in build events: `-i="$(PROJECTDIR)","$(INCLUDEPATH)"`
+  Makro to use in build events: `-i="$(PROJECTDIR);$(INCLUDEPATH)"`
 
 ## Modify
 
@@ -91,11 +91,11 @@ To fix the [iOS9 issue with `TWebBrowser`][1] and [ERROR ITMS-90507: Missing Inf
   </dict>
 </plist>
 ```
-That's all with a configured Post-Build-Event.
+That's all with a configured Pre-[Build-Event].
 
 ## Build event
 
-The best place for calling this application is in the Post-[Build-Event] of the project. A common configuration will look like this:
+The best place for calling this application is in the Pre-[Build-Event] of the project. A common configuration will look like this:
 
 `"<Path to ModPList>" -p="$(Platform)" -c="$(Config)" -f="$(OUTPUTPATH).info.plist" -i="$(PROJECTDIR)","$(INCLUDEPATH)"`
 
