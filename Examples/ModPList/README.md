@@ -97,7 +97,7 @@ That's all with a configured Pre-[Build-Event].
 
 The best place for calling this application is in the Pre-[Build-Event] of the project. A common configuration will look like this:
 
-`"<Path to ModPList>" -p="$(Platform)" -c="$(Config)" -f="$(OUTPUTPATH).info.plist" -i="$(PROJECTDIR)","$(INCLUDEPATH)"`
+`"<Path to ModPList>" -p="$(Platform)" -c="$(Config)" -f="$(OUTPUTPATH).info.plist" -i="$(PROJECTDIR);$(INCLUDEPATH)"`
 
 You can set a global [Environment-Variable] with the path to the ModPList application
 
@@ -107,7 +107,7 @@ Variable | Value
 
 and then use this for the Build-Event
 
-`"$(ModPList)" -p="$(Platform)" -c="$(Config)" -f="$(OUTPUTPATH).info.plist" -i="$(PROJECTDIR),$(INCLUDEPATH)"`
+`"$(ModPList)" -p="$(Platform)" -c="$(Config)" -f="$(OUTPUTPATH).info.plist" -i="$(PROJECTDIR);$(INCLUDEPATH)"`
 
 [1]: http://community.embarcadero.com/blogs/entry/how-to-use-custom-info-plist-xml-to-support-ios-9-s-new-app-transport-security-feature
 [2]: https://community.embarcadero.com/article/articles-support/176-rad-studio/usability/16049-error-itms-90507-missing-info-plist-value-a-value-for-the-key-dtplatformname-is-required-when-submitting-an-app-to-the-ios-app-store
