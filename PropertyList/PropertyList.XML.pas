@@ -67,7 +67,8 @@ uses
   XML.adomxmldom;
 
 const
-  XML_DOM_VENDOR = sAdom4XmlVendor;
+  XML_DOM_VENDOR  = sAdom4XmlVendor;
+  XML_DOM_VERSION = '1.0';
 
 const
   PLIST_DOM_QUALIFIEDNAME = 'plist';
@@ -96,7 +97,7 @@ begin
   Result := XML.xmldom.GetDOMVendor( XML_DOM_VENDOR );
 end;
 
-function GetNewDocument( const Version: DOMString = '1.0' ): IXMLDocument;
+function GetNewDocument( const Version: DOMString = XML_DOM_VERSION ): IXMLDocument;
 var
   LDocument: TXMLDocument;
 begin
