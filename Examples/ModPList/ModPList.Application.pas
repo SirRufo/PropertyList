@@ -223,7 +223,7 @@ begin
 
   Writeln( 'Target-File: ', LTargetFile );
 
-  LCheckTargetExists := not FindCmdLineSwitch( 'ct', True ) and not FindCmdLineSwitch( 'checktarget', True );
+  LCheckTargetExists := FindCmdLineSwitch( 'ct', True ) or FindCmdLineSwitch( 'checktarget', True );
 
   if not FindCmdLineSwitch( 'p=', LPlatform, True, [ clstValueAppended ] ) and not FindCmdLineSwitch( 'platform', LPlatform, True, [ clstValueNextParam ] )
   then
